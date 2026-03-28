@@ -20,16 +20,34 @@ CREATE TABLE accounts (
 );
 
 -- CATEGORY
-CREATE TABLE categories (
-    category_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES users(user_id),
-    category_name VARCHAR(100),
-    type VARCHAR(50),
-    icon VARCHAR(100),
-    color VARCHAR(50),
-    is_system BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- WARNING: This schema is for context only and is not meant to be run.
+-- Table order and constraints may not be valid for execution.
+
+CREATE TABLE icons (
+  icon_id uuid NOT NULL DEFAULT gen_random_uuid(),
+  name character varying NOT NULL,
+  icon_code character varying NOT NULL,
+  category character varying,
+  tags ARRAY,
+  is_active boolean NOT NULL DEFAULT true,
+  created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT icons_pkey PRIMARY KEY (icon_id)
 );
+
+CREATE TABLE categories (
+  category_id uuid NOT NULL DEFAULT gen_random_uuid(),
+  user_id uuid,
+  category_name character varying NOT NULL,
+  type character varying,
+  icon_id uuid,
+  color character varying,
+  is_system boolean NOT NULL DEFAULT false,
+  created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT categories_pkey PRIMARY KEY (category_id),
+  CONSTRAINT categories_icon_id_fkey FOREIGN KEY (icon_id) REFERENCES category_service.icons(icon_id)
+);
+
+
 
 -- TRANSACTION
 CREATE TABLE transactions (
@@ -70,25 +88,32 @@ VALUES
 ('d4ffbef0-8bcc-445e-9ea3-7bc854e2ad76', '901ce87f-db7d-4ab2-a644-5b529b8a790b', 'TP Bank', 'bank', 200000, 'VND'),
 ('d922044d-7259-4a95-9a9f-930935073821', '901ce87f-db7d-4ab2-a644-5b529b8a790b', 'MB Bank', 'bank', 700000, 'VND');
 
-INSERT INTO categories (category_id, user_id, category_name, type, icon, color, is_system)
+INSERT INTO icons (icon_id, name, icon_code, category, is_active)
 VALUES
+('29307775-f865-4f36-9466-419b67323860', 'Salary Icon', 'salary_code', 'income', TRUE),
+('16896264-924d-476c-9410-b960927e6992', 'Food Icon', 'food_code', 'expense', TRUE),
+('556f8f1c-4b67-4228-863a-8673a88636e0', 'Transport Icon', 'trans_code', 'expense', TRUE),
+('a0595304-706f-45e0-8f92-5e4d94d8d179', 'Shopping Icon', 'shop_code', 'expense', TRUE),
+('b4297121-657d-4541-9494-013e87848417', 'Entertainment Icon', 'ent_code', 'expense', TRUE),
+('f1995874-297d-460c-882d-136585918831', 'Bills Icon', 'bill_code', 'expense', TRUE);
 
-('d8588605-fa23-4b66-a81a-babc39f54ab8', '5324c950-d209-44b7-9e1b-2c3d859a17af', 'Salary', 'income', '💰', 'green', FALSE),
-('970eb25c-2af8-44f3-a762-a4b9a218668e', '5324c950-d209-44b7-9e1b-2c3d859a17af', 'Food', 'expense', '🍔', 'red', FALSE),
-('7b926e06-f682-4e15-a412-554daa9b012d', '5324c950-d209-44b7-9e1b-2c3d859a17af', 'Transport', 'expense', '🚗', 'blue', FALSE),
-('87880d53-4827-4f06-8b0c-9c62de6692d9', '5324c950-d209-44b7-9e1b-2c3d859a17af', 'Shopping', 'expense', '🛍️', 'purple', FALSE),
+INSERT INTO categories (category_id, user_id, category_name, type, icon_id, color, is_system)
+VALUES
+-- User 1
+('d8588605-fa23-4b66-a81a-babc39f54ab8', '5324c950-d209-44b7-9e1b-2c3d859a17af', 'Salary', 'income', '29307775-f865-4f36-9466-419b67323860', 'green', FALSE),
+('970eb25c-2af8-44f3-a762-a4b9a218668e', '5324c950-d209-44b7-9e1b-2c3d859a17af', 'Food', 'expense', '16896264-924d-476c-9410-b960927e6992', 'red', FALSE),
+('7b926e06-f682-4e15-a412-554daa9b012d', '5324c950-d209-44b7-9e1b-2c3d859a17af', 'Transport', 'expense', '556f8f1c-4b67-4228-863a-8673a88636e0', 'blue', FALSE),
+('87880d53-4827-4f06-8b0c-9c62de6692d9', '5324c950-d209-44b7-9e1b-2c3d859a17af', 'Shopping', 'expense', 'a0595304-706f-45e0-8f92-5e4d94d8d179', 'purple', FALSE),
 
-('9dec18f6-2f93-4ee9-a402-9e6ae2cce8f8', 'e67f2863-5f03-4dff-b247-478b140ab6c4', 'Freelance', 'income', '💻', 'green', FALSE),
-('13a008d9-04c7-498f-9557-8dcbed643cb1', 'e67f2863-5f03-4dff-b247-478b140ab6c4', 'Coffee', 'expense', '☕', 'brown', FALSE),
-('bc0f56d8-1a77-4024-93d8-ae709d297cc7', 'e67f2863-5f03-4dff-b247-478b140ab6c4', 'Gaming', 'expense', '🎮', 'black', FALSE),
-('1117481a-dd27-4615-9201-9a1cfec45c0e', 'e67f2863-5f03-4dff-b247-478b140ab6c4', 'Bills', 'expense', '📄', 'orange', FALSE),
+-- User 2
+('9dec18f6-2f93-4ee9-a402-9e6ae2cce8f8', 'e67f2863-5f03-4dff-b247-478b140ab6c4', 'Freelance', 'income', '29307775-f865-4f36-9466-419b67323860', 'green', FALSE),
+('13a008d9-04c7-498f-9557-8dcbed643cb1', 'e67f2863-5f03-4dff-b247-478b140ab6c4', 'Coffee', 'expense', '16896264-924d-476c-9410-b960927e6992', 'brown', FALSE),
+('1117481a-dd27-4615-9201-9a1cfec45c0e', 'e67f2863-5f03-4dff-b247-478b140ab6c4', 'Bills', 'expense', 'f1995874-297d-460c-882d-136585918831', 'orange', FALSE),
 
-('18af69dc-a994-4213-aef1-a0c3e51ce711', 'cd83a6d0-8422-417d-845f-f9633cd6099e', 'Salary', 'income', '📈', 'green', FALSE),
-('c8798f26-d478-4bd7-a1bc-7335850d8dd0', 'cd83a6d0-8422-417d-845f-f9633cd6099e', 'Food', 'expense', '🍜', 'red', FALSE),
-('a7b488f0-14bb-4fb0-9aff-3296ebd9ec9b', 'cd83a6d0-8422-417d-845f-f9633cd6099e', 'Travel', 'expense', '✈️', 'blue', FALSE),
-('d990a4a7-a436-4a6c-895e-0e71c2bbe88e', 'cd83a6d0-8422-417d-845f-f9633cd6099e', 'Shopping', 'expense', '🛍️', 'purple', FALSE),
+-- User 3
+('18af69dc-a994-4213-aef1-a0c3e51ce711', 'cd83a6d0-8422-417d-845f-f9633cd6099e', 'Salary', 'income', '29307775-f865-4f36-9466-419b67323860', 'green', FALSE),
+('c8798f26-d478-4bd7-a1bc-7335850d8dd0', 'cd83a6d0-8422-417d-845f-f9633cd6099e', 'Food', 'expense', '16896264-924d-476c-9410-b960927e6992', 'red', FALSE),
 
-('cf4dfdab-3dda-4ae1-a1b2-09364b6c5d01', '901ce87f-db7d-4ab2-a644-5b529b8a790b', 'Salary', 'income', '🎁', 'green', FALSE),
-('c6e31bec-9e96-4981-832d-e8a38feaa9e6', '901ce87f-db7d-4ab2-a644-5b529b8a790b', 'Transport', 'expense', '🚕', 'blue', FALSE),
-('615b0d7a-5ace-4297-a404-0d67b7b0087a', '901ce87f-db7d-4ab2-a644-5b529b8a790b', 'Food', 'expense', '🍕', 'red', FALSE),
-('9b870dba-7323-4dfe-9da5-54dfef366f52', '901ce87f-db7d-4ab2-a644-5b529b8a790b', 'Entertainment', 'expense', '🎬', 'pink', FALSE);
+-- User 4
+('cf4dfdab-3dda-4ae1-a1b2-09364b6c5d01', '901ce87f-db7d-4ab2-a644-5b529b8a790b', 'Salary', 'income', '29307775-f865-4f36-9466-419b67323860', 'green', FALSE),
+('9b870dba-7323-4dfe-9da5-54dfef366f52', '901ce87f-db7d-4ab2-a644-5b529b8a790b', 'Entertainment', 'expense', 'b4297121-657d-4541-9494-013e87848417', 'pink', FALSE);
