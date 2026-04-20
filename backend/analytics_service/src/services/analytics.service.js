@@ -796,6 +796,19 @@ const service = {
 //     return await repo.createManyMonthlyReport(dataArray);
 //   }
 
+
+
+
 };
+
+// const axios = require('axios');
+
+// await axios.post('http://localhost:3005/api/notifications/send', {
+//   email: 'test@gmail.com',
+//   type: 'USER_REGISTERED',
+//   data: {
+//     name: 'Phuc'
+//   }
+// });
 
 module.exports = service;

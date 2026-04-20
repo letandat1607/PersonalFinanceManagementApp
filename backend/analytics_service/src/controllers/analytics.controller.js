@@ -31,7 +31,7 @@ const createUserAnalytics = async (req, res) => {
     const data = req.body;
 
     console.log('=== accountId:', accountId);
-    console.log("=== data nhận được:", JSON.stringify(data, null, 2));  
+    console.log("=== data nhận được:", JSON.stringify(data, null, 2));
 
     if (data.total_income === undefined || typeof data.total_income !== 'number') {
       return res.status(400).json({ success: false, message: 'total_income is required and must be a number' });
@@ -210,16 +210,33 @@ const getCategorySummaryByMonth = async (req, res) => {
     const { accountId } = req.params;
     const { year, month } = req.query;
 
+
+    const yearNum = parseInt(year);
+    const monthNum = parseInt(month);
+
+    console.log("YEAR =", year);
+    console.log("MONTH =", month);
+
+    if (isNaN(yearNum) || isNaN(monthNum)) {
+      return res.status(400).json({
+        success: false,
+        message: 'year/month invalid'
+      });
+    }
+
     if (!year || !month) {
       return res.status(400).json({ success: false, message: 'year and month query params are required' });
     }
 
     const data = await service.getCategorySummaryByMonth(accountId, year, month);
+    console.log("Data trả về từ service:", JSON.stringify(data, null, 2));
     return res.status(200).json({ success: true, data });
   } catch (err) {
     return res.status(500).json({ success: false, message: err.message });
   }
 };
+
+
 
 const getCategorySummaryById = async (req, res) => {
   try {
@@ -577,7 +594,7 @@ const getTransactions = async (req, res) => {
   try {
     const { accountId } = req.params;
     const limit = Number(req.query.limit) || 20;
-    const skip  = Number(req.query.skip)  || 0;
+    const skip = Number(req.query.skip) || 0;
     const data = await service.getTransactions(accountId, { limit, skip });
     return res.status(200).json({ success: true, data });
   } catch (err) {
@@ -1009,7 +1026,7 @@ module.exports = {
 //   getUserCategorySummary,
 //   getUserMonthlyReport,
 //   getUserDashboardCache,
-//   getUserSpendingTrend, 
+//   getUserSpendingTrend,
 //   getUserAnalytics,
 //   getAllUserAnalytics,
 //   createUserAnalytics,

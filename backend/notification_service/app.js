@@ -12,7 +12,15 @@ app.get('/health', (req, res) => {
     res.status(200).json({ status: 'ok' });
 });
 
+
+// import routes
+const notificationRoutes = require('./src/routes/notification.routes');
+
+// 👇 QUAN TRỌNG
+app.use('/notifications', notificationRoutes);
+
+
 app.listen(PORT, async () => {
-    rabbitMQClient.startRabbitMQ();
+    // rabbitMQClient.startRabbitMQ();
     console.log(`Notifiaction service is running on port ${PORT}`);
 });

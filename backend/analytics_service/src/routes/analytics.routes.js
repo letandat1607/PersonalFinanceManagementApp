@@ -120,9 +120,9 @@ router.get('/anomaly_logs/detail/:logId',           getAnomalyLogById);
 // DELETE /category_summary/detail/:id              → delete single
 // DELETE /category_summary/:accountId              → delete all for account
 // ================================================================
-router.get('/category_summary/:accountId',             getCategorySummary);
 router.get('/category_summary/:accountId/by_month',    getCategorySummaryByMonth);
 router.get('/category_summary/:accountId/over_budget', getOverBudgetCategories);
+router.get('/category_summary/:accountId',             getCategorySummary);
 router.get('/category_summary/detail/:id',             getCategorySummaryById);
  
 // router.post('/category_summary/:accountId', createCategorySummary);

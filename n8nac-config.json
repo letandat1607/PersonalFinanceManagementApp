@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "activeInstanceId": "instance-85ffdde4",
+  "instances": [
+    {
+      "id": "instance-85ffdde4",
+      "name": "localhost",
+      "host": "http://localhost:1234/settings/api",
+      "syncFolder": "workflows",
+      "verification": {
+        "status": "failed",
+        "lastCheckedAt": "2026-04-18T09:13:30.018Z",
+        "lastError": "Unable to resolve the authenticated n8n user."
+      }
+    }
+  ],
+  "host": "http://localhost:1234/settings/api",
+  "syncFolder": "workflows"
+}
